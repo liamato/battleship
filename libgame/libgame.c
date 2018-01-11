@@ -35,15 +35,15 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
     clear();
     
     printf("Mode:\n\t0:Automatic\n\t1:Un jugador\n\t2:Contra la maquina\n");
-    scanf("%hu", (short unsigned int *)&partida->mode);
-    while ((short unsigned int)partida->mode < 0 || (short unsigned int)partida->mode > 0) {
+    scanf("%i", &partida->mode);
+    while (partida->mode < 0 || partida->mode > 0) {
         if (partida->mode == JUGADOR || partida->mode == JUGADOR_MAQUINA) {
             printf("Mode no disponible actualment\n");
         } else {    
             printf("Mode invalid\n");
         }
         printf("Mode:\n\t0:Automatic\n\t1:Un jugador\n\t2:Contra la maquina\n");
-        scanf("%hu", (short unsigned int *)&partida->mode);
+        scanf("%i", &partida->mode);
     }
     clear();
     flush_stdin();

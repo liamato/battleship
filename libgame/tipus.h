@@ -69,9 +69,9 @@ typedef struct {
 } jugador_t;
 
 typedef enum {
-    MAQUINA = (short unsigned int)0,
-    JUGADOR = (short unsigned int)1,
-    JUGADOR_MAQUINA = (short unsigned int)2
+    MAQUINA = (int)0,
+    JUGADOR = (int)1,
+    JUGADOR_MAQUINA = (int)2
 } gamemode_t;
 
 typedef struct {
