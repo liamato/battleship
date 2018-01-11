@@ -7,6 +7,7 @@ OBJ_DIR=./obj
 LIB_DIR=./lib
 HEADER_DIR=./include
 LG_DIR=./libgame
+LC_DIR=./libcolors
 
 .PHONY: all
 all: objdir joc
@@ -20,12 +21,17 @@ game: objdir proc tipus $(LG_DIR)/libgame.c $(LG_DIR)/libgame.h
 	@\cp -rf $(LG_DIR)/libgame.h $(HEADER_DIR)/
 	@ar crD $(LIB_DIR)/libgame.a $(OBJ_DIR)/libgame.o
 
-proc: objdir $(LG_DIR)/proc.c $(LG_DIR)/proc.h
+proc: objdir colors $(LG_DIR)/proc.c $(LG_DIR)/proc.h
 	@\cp -rf $(LG_DIR)/proc.h $(HEADER_DIR)/
 	$(COMPILE) $(LG_DIR)/proc.c -o $(OBJ_DIR)/proc.o
 
 tipus: $(LG_DIR)/tipus.h
 	@\cp -rf $(LG_DIR)/tipus.h $(HEADER_DIR)/
+
+colors: objdir $(LC_DIR)/libcolors.c $(LC_DIR)/libcolors.h
+	$(COMPILE) $(LC_DIR)/libcolors.c -o $(OBJ_DIR)/libcolors.o
+	@\cp -rf $(LC_DIR)/libcolors.h $(HEADER_DIR)/
+	@ar crD $(LIB_DIR)/libcolors.a $(OBJ_DIR)/libcolors.o
 
 .PHONY: run
 run: all
@@ -43,6 +49,7 @@ dist: all clean
 clean:
 	rm -rf $(OBJ_DIR)
 	rm -f $(LIB_DIR)/libgame.a
+	rm -f $(LIB_DIR)/libcolors.a
 	rm -f game
 	rm -f records.txt
 	rm -f P2.zip

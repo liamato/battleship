@@ -10,6 +10,7 @@
 #include "proc.h"
 #include <stdbool.h>
 #include <ctype.h>
+#include "libcolors.h"
 
 /** Procediments auxiliars */
 /*
@@ -160,6 +161,24 @@ void P_inicializa_matriz (char matriz[][COL_MAX], int nfilas, int ncols, char ca
     }
 }
 
+void colorPrint(char c) {
+    if (c == '?') {
+        printcf(MAGENTA, " %c", c);
+    }
+    if (c == '.') {
+        printcf(BLUE, " %c", c);
+    }
+    if (c == '@') {
+        printcf(GREEN, " %c", c);
+    }
+    if (c == 'X') {
+        printcf(RED, " %c", c);
+    }
+    if (c == '-') {
+        printcf(CYAN, " %c", c);
+    }
+}
+
 /*
  accio P_muestra_una_matriz ( matriz: taula de caracters, nfilas: enter, ncols: enter) es;
  */
@@ -176,7 +195,7 @@ void P_muestra_una_matriz (char matriz[][COL_MAX], int nfilas, int ncols)
          printf(" %c", 'A' + f);
          for (c=0; c<ncols ; c++)
          {
-             printf(" %c",matriz[f][c]) ;
+             colorPrint(matriz[f][c]);
          }
          printf("\n");
      }
@@ -200,12 +219,12 @@ void P_muestra_dos_matrices (char matriz1[][COL_MAX], char matriz2[][COL_MAX], i
     while (x < nfilas) {
         y = 0;
         printf(" %c", 'A' + x);
-        while (y < ncols) {printf(" %c",matriz1[x][y++]);}
+        while (y < ncols) {colorPrint(matriz1[x][y++]);}
         printf("\t");
 
         y = 0;
         printf(" %c", 'A' + x);
-        while (y < ncols) {printf(" %c",matriz2[x][y++]);}
+        while (y < ncols) {colorPrint(matriz2[x][y++]);}
         printf("\n");
         x++;
     }
