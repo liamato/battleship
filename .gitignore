@@ -1,0 +1,8 @@
+*.zip
+*.a
+*.o
+game
+records.txt
+obj/
+lib/
+include/
