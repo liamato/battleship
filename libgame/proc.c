@@ -14,7 +14,7 @@
 /** Procediments auxiliars */
 /*
  accio P_netejar_stdio();
- 
+
  "Netejar" l'entrada estandard (buidar el buffer de teclat)
 */
 void P_netejar_stdio(void)
@@ -25,7 +25,7 @@ void P_netejar_stdio(void)
 
 /*
  funcio P_data_avui() retorna data_tipus;
- 
+
  Retorna la data actual.
  */
 data_t P_data_avui(void)
@@ -39,7 +39,7 @@ data_t P_data_avui(void)
     avui.dia = data->tm_mday;
     avui.mes = data->tm_mon+1;
     avui.any = data->tm_year+1900;
-    
+
     return avui;
 }
 
@@ -64,7 +64,7 @@ extern void P_decide_disparo (int *f, int *c, char tablero_disparos[][COL_MAX], 
 
     *f = -1;
     *c = -1;
-    
+
     while (x < (int)dim && *f == -1 && *c == -1) {
         y = 0;
         while (y < (int)dim && *f == -1 && *c == -1) {
@@ -75,19 +75,19 @@ extern void P_decide_disparo (int *f, int *c, char tablero_disparos[][COL_MAX], 
                 } else if (y != 0 && tablero_disparos[x][y-1] == CASELLA_BUIDA) {
                     *f = x;
                     *c = y-1;
-                } else if (x < (int)dim-1 && tablero_disparos[x+1][y] == CASELLA_BUIDA) {   
+                } else if (x < (int)dim-1 && tablero_disparos[x+1][y] == CASELLA_BUIDA) {
                     *f = x+1;
                     *c = y;
                 } else if (y < (int)dim-1 && tablero_disparos[x][y+1] == CASELLA_BUIDA) {
                     *f = x;
                     *c = y+1;
                 }
-            }            
+            }
             y++;
         }
         x++;
     }
-    
+
     while (*f == -1 && *c == -1) {
         x = P_aleatorio(0, (int)dim);
         y = P_aleatorio(0, (int)dim);
@@ -105,7 +105,7 @@ extern void P_procesa_hundido (int f, int c, char tablero_disparos[][COL_MAX], u
 {
     char pos = tablero_disparos[f][c];
     find_first_position(tablero_disparos, dim, &f, &c);
-    
+
     while (tablero_disparos[f][c] == pos) {
         fill_water(tablero_disparos, dim, f, c);
         if (es_vertical(tablero_disparos, dim, f, c)) {c++;}
@@ -166,11 +166,11 @@ void P_inicializa_matriz (char matriz[][COL_MAX], int nfilas, int ncols, char ca
 void P_muestra_una_matriz (char matriz[][COL_MAX], int nfilas, int ncols)
 {
      int f = 0, c;
-     
+
      printf("  ");
      while (f < ncols) {printf(" %i", 1+f++);}
      printf("\n");
- 
+
      for (f=0 ; f<nfilas ; f++)
      {
          printf(" %c", 'A' + f);
@@ -188,21 +188,21 @@ void P_muestra_una_matriz (char matriz[][COL_MAX], int nfilas, int ncols)
 void P_muestra_dos_matrices (char matriz1[][COL_MAX], char matriz2[][COL_MAX], int nfilas, int ncols)
 {
     int x = 0, y = 0;
-    
+
     printf("  ");
     while (y < ncols) {printf(" %i", 1+y++);}
     printf("\t  ");
     y = 0;
     while (y < ncols) {printf(" %i", 1+y++);}
-    
+
     printf("\n");
-    
+
     while (x < nfilas) {
         y = 0;
         printf(" %c", 'A' + x);
         while (y < ncols) {printf(" %c",matriz1[x][y++]);}
         printf("\t");
-        
+
         y = 0;
         printf(" %c", 'A' + x);
         while (y < ncols) {printf(" %c",matriz2[x][y++]);}
@@ -224,7 +224,7 @@ extern bool P_guarda_record (char fitxer_record[], record_t record)
     {
         operacio = true ;
         fwrite(&record,sizeof(record_t), 1, f_records) ;
-        
+
         fclose(f_records);
     }
     else
@@ -255,8 +255,8 @@ extern int P_recupera_records (char fitxer_record[], record_t records[], unsigne
     } else {
         printf ("No existeix el fitxer\n") ;
     }
-    
-    
+
+
     return (int)n_records-1;
 }
 
@@ -362,7 +362,7 @@ void fill_water_diagonals(char taula[][DIM_MAX], unsigned int dim, int x, int y)
 
 void fill_water(char taula[][DIM_MAX], unsigned int dim, int x, int y) {
     fill_water_diagonals(taula, dim, x, y);
-    
+
     if (x != 0 && taula[x-1][y] != CASELLA_VAIXELL) {taula[x-1][y] = CASELLA_AIGUA;}
     if (y != 0 && taula[x][y-1] != CASELLA_VAIXELL) {taula[x][y-1] = CASELLA_AIGUA;}
     if (x < (int)dim-1 && taula[x+1][y] != CASELLA_VAIXELL) {taula[x+1][y] = CASELLA_AIGUA;}

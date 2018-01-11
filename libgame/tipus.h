@@ -62,7 +62,7 @@ typedef struct
      char disparos[DIM_MAX][DIM_MAX];
      unsigned short dim;
  } tauler_t;
- 
+
 typedef struct {
     tauler_t tauler;
     record_t record;

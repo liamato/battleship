@@ -25,7 +25,7 @@ int main ()
 
     /* Inicialitzacions generals */
     srand((int)time(NULL));
-    
+
     while (!fi) {
         clear();
         menu(menu_extens);

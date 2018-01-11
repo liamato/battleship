@@ -24,14 +24,14 @@
  ------------------------------------------------------- */
 /*
  accio P_netejar_stdio();
- 
+
  "Netejar" l'entrada estandard (buidar el buffer de teclat)
  */
 void P_netejar_stdio(void);
 
 /*
  funcio P_data_avui() retorna data_tipus;
- 
+
  Retorna la data actual.
  */
 data_t P_data_avui(void);

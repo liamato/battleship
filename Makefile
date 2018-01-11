@@ -23,7 +23,7 @@ game: objdir proc tipus $(LG_DIR)/libgame.c $(LG_DIR)/libgame.h
 proc: objdir $(LG_DIR)/proc.c $(LG_DIR)/proc.h
 	@\cp -rf $(LG_DIR)/proc.h $(HEADER_DIR)/
 	$(COMPILE) $(LG_DIR)/proc.c -o $(OBJ_DIR)/proc.o
-	
+
 tipus: $(LG_DIR)/tipus.h
 	@\cp -rf $(LG_DIR)/tipus.h $(HEADER_DIR)/
 
