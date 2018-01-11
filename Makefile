@@ -27,6 +27,10 @@ proc: objdir $(LG_DIR)/proc.c $(LG_DIR)/proc.h
 tipus: $(LG_DIR)/tipus.h
 	@\cp -rf $(LG_DIR)/tipus.h $(HEADER_DIR)/
 
+.PHONY: run
+run: all
+	./game
+
 .PHONY: objdir
 objdir:
 	@if [ ! -d "$(OBJ_DIR)" ]; then mkdir $(OBJ_DIR); fi
