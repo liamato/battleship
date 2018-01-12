@@ -36,7 +36,7 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
 
     printf("Mode:\n\t0:Automatic\n\t1:Un jugador\n\t2:Contra la maquina\n");
     scanf("%i", &partida->mode);
-    while (partida->mode < 0 || partida->mode > 0) {
+    while ((int)partida->mode < 0 || (int)partida->mode > 0) {
         if (partida->mode == JUGADOR || partida->mode == JUGADOR_MAQUINA) {
             printf("Mode no disponible actualment\n");
         } else {
