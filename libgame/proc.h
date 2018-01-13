@@ -98,6 +98,8 @@ funcio P_recupera_records (fitxer_record:taula de caracters, var records:taula d
 */
 extern int P_recupera_records (char fitxer_record[], record_t records[], unsigned int dim);
 
+extern void sort_records(record_t *records, unsigned int dim);
+
 /** -------------------------------------------------------
     PROCEDIMENTS ADDICIONALS A DESENVOLUPAR
     ------------------------------------------------------- */

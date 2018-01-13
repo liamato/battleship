@@ -34,6 +34,9 @@
 #define DIM_MAX 10
 #endif
 
+#define RECORDS_TOP_COUNT 10
+#define RECORD_FORMAT "%d-%d-%d\t%s\t%d\n"
+
 
 /* Definicio de nous tipus del projecte */
 
@@ -49,7 +52,7 @@ typedef struct
 
 typedef struct
 {
-    char nom[NOM_MAX];
+    nom_t nom;
     int punts;
     data_t data;
 } record_t;

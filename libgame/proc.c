@@ -10,6 +10,7 @@
 #include "proc.h"
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "libcolors.h"
 
 /** Procediments auxiliars */
@@ -233,54 +234,58 @@ void P_muestra_dos_matrices (char matriz1[][COL_MAX], char matriz2[][COL_MAX], i
 /*
  funcio P_guarda_record (fitxer_record:taula de caracters, record:record_t) retorna boolea;
  */
-extern bool P_guarda_record (char fitxer_record[], record_t record)
-{
-    FILE *f_records ;
-    bool operacio ;
+extern bool P_guarda_record (char fitxer_record[], record_t record) {
+    FILE *file ;
+    record_t records[RECORDS_TOP_COUNT+1];
+    int count = 0,x=0;
 
-    f_records = fopen (fitxer_record,"ab");
-    if (f_records != NULL)
-    {
-        operacio = true ;
-        fwrite(&record,sizeof(record_t), 1, f_records) ;
+    count = P_recupera_records(fitxer_record, records, RECORDS_TOP_COUNT);
 
-        fclose(f_records);
-    }
-    else
-    {
-        operacio = false ;
+    records[count++] = record;
+
+    sort_records(records, count);
+
+    file = fopen (fitxer_record,"w");
+
+    if (file == NULL) {
         printf ("No existeix el fitxer\n") ;
+        return false;
     }
-    return operacio;
+
+    while (x < (count < RECORDS_TOP_COUNT ? count : RECORDS_TOP_COUNT)) {
+        fprintf(file, RECORD_FORMAT, records[x].data.dia, records[x].data.mes, records[x].data.any, records[x].nom, records[x].punts);
+        x++;
+    }
+
+    fclose(file);
+
+    return true;
 }
 
 /*
  funcio P_recupera_records (fitxer_record:taula de caracters, var records:taula de record_tipus, dim:enter ) retorna enter;
  */
-extern int P_recupera_records (char fitxer_record[], record_t records[], unsigned int dim)
-{
-    FILE *f_records ;
-    unsigned int n_records = 0;
+extern int P_recupera_records (char fitxer_record[], record_t records[], unsigned int dim) {
+    FILE *file ;
+    int x = 0;
 
-    f_records = fopen(fitxer_record, "rb");
+    file = fopen(fitxer_record, "r");
 
-    if (f_records != NULL) {
-        while (!(feof(f_records)) && n_records < dim)
-        {
-            fread(records+n_records, sizeof(record_t), 1, f_records);
-            n_records = n_records + 1 ;
-        }
-        fclose(f_records);
-    } else {
-        printf ("No existeix el fitxer\n") ;
+    if (file == NULL) {
+        return 0;
     }
 
+    while (!feof(file) && x < (int)dim) {
+        fscanf(file, RECORD_FORMAT, &records[x].data.dia, &records[x].data.mes, &records[x].data.any, records[x].nom, &records[x].punts);
+        x++;
+    }
 
-    return (int)n_records-1;
+    fclose(file);
+
+    return x;
 }
 
-void P_muestra_records (record_t records[], int dim)
-{
+void P_muestra_records (record_t records[], int dim) {
     int i, j;
     i = 0;
     printf("Data:\t\tNom:\t\tPunts:\n");
@@ -303,6 +308,14 @@ void P_muestra_records (record_t records[], int dim)
         printf ("%i\n", records[i].punts) ;
         i = i + 1 ;
     }
+}
+
+int compare_record(const void *record1, const void *record2) {
+    return (((record_t *)record1)->punts > ((record_t *)record2)->punts) ? -1 : (((record_t *)record1)->punts < ((record_t *)record2)->punts);
+}
+
+void sort_records(record_t *records, unsigned int dim) {
+    qsort(records, dim, sizeof(record_t), &compare_record);
 }
 
 /** -------------------------------------------------------

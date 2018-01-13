@@ -83,8 +83,8 @@ void carregarPartida(partida_t *partida) {
 
 void mostrarPodium() {
     int num_r;
-    record_t records_g[10];
-    num_r = P_recupera_records(FITXER_RECORDS, records_g, 10);
+    record_t records_g[RECORDS_TOP_COUNT];
+    num_r = P_recupera_records(FITXER_RECORDS, records_g, RECORDS_TOP_COUNT);
     P_muestra_records(records_g, num_r);
     P_pausa();
 }
