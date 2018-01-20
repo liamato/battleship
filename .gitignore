@@ -1,5 +1,4 @@
 *.zip
-*.a
 *.o
 game
 records.txt
