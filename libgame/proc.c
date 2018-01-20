@@ -268,6 +268,7 @@ extern bool P_guarda_record (char fitxer_record[], record_t record) {
 extern int P_recupera_records (char fitxer_record[], record_t records[], unsigned int dim) {
     FILE *file ;
     int x = 0;
+    unsigned int c = 0;
 
     file = fopen(fitxer_record, "r");
 
@@ -276,7 +277,16 @@ extern int P_recupera_records (char fitxer_record[], record_t records[], unsigne
     }
 
     while (!feof(file) && x < (int)dim) {
-        fscanf(file, RECORD_FORMAT, &records[x].data.dia, &records[x].data.mes, &records[x].data.any, records[x].nom, &records[x].punts);
+        fscanf(file, "%d-%d-%d\t", &records[x].data.dia, &records[x].data.mes, &records[x].data.any);
+
+        c = 0;
+        fscanf(file, "%c", &records[x].nom[c]);
+        while (records[x].nom[c] != '\t' && x < NOM_MAX) {
+            fscanf(file, "%c", &records[x].nom[++c]);
+        }
+        records[x].nom[c] = 0;
+
+        fscanf(file, "%d\n", &records[x].punts);
         x++;
     }
 
