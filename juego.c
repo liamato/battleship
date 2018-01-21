@@ -33,9 +33,9 @@ int main ()
         flush_stdin();
         switch (opcio) {
             case 'a': novaPartida(&menu_extens, &partida); break;
-            case 'b': carregarPartida(&partida); break;
+            case 'b': carregarPartida(&menu_extens, &partida); break;
             case 'e': mostrarPodium(); break;
-            case 'c': jugarPartida(&partida); break;
+            case 'c': jugarPartida(&menu_extens, &partida); break;
             case 'd': guardarPartida(&partida); break;
             case 'f': sortir(&fi); break;
             default: printf("Opcio incorrecte.\n"); break;

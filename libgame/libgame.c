@@ -84,7 +84,7 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
     initPartida(partida, (gamemode_t)mode, nom, dim);
 }
 
-void carregarPartida(partida_t *partida) {
+void carregarPartida(bool *menu_extens, partida_t *partida) {
     int unsigned dimen;
     int m_joc, torn;
     jugador_t nom_jugadors[2];
@@ -94,6 +94,7 @@ void carregarPartida(partida_t *partida) {
 
     if (partidaCarregada) {
         compose_partida(partida, dimen, m_joc, torn, nom_jugadors);
+        *menu_extens = true;
         printf ("La partida s'ha carregat correctament.");
     } else {
         printf ("No s'ha pogut carregar cap partida, no existeix cap partida guardada.");
@@ -131,7 +132,7 @@ void procesaDisparo(jugador_t *jugador, tauler_t *tauler, int *x, int *y) {
     }
 }
 
-void jugarPartida(partida_t *partida) {
+void jugarPartida(bool *menu_extens, partida_t *partida) {
     int x,y;
     char f;
     jugador_t *j = NULL;
@@ -197,6 +198,8 @@ void jugarPartida(partida_t *partida) {
         printf("Puntuacio: %i\n", j->record.punts);
 
         P_guarda_record(FITXER_RECORDS, j->record);
+
+        *menu_extens = false;
 
         P_pausa();
     }
