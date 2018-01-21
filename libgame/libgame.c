@@ -36,8 +36,8 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
 
     printf("Mode:\n\t0:Automatic\n\t1:Un jugador\n\t2:Contra la maquina\n");
     scanf("%i", &partida->mode);
-    while ((int)partida->mode < 0 || (int)partida->mode > 0) {
-        if (partida->mode == JUGADOR || partida->mode == JUGADOR_MAQUINA) {
+    while ((int)partida->mode < 0 || (int)partida->mode > 1) {
+        if (partida->mode == JUGADOR_MAQUINA) {
             printf("Mode no disponible actualment\n");
         } else {
             printf("Mode invalid\n");
@@ -83,7 +83,7 @@ void carregarPartida(partida_t *partida) {
     jugador_t nom_jugadors[2];
     bool partidaCarregada;
 
-    partidaCarregada = P_recupera_partida("partida.txt", &dimen, &m_joc, &torn, nom_jugadors);
+    partidaCarregada = P_recupera_partida(FITXER_JOC, &dimen, &m_joc, &torn, nom_jugadors);
 
     if (partidaCarregada) {
         compose_partida(partida, dimen, m_joc, torn, nom_jugadors);
@@ -101,49 +101,73 @@ void mostrarPodium() {
     P_pausa();
 }
 
+void procesaDisparo(partida_t *partida, int *x, int *y, int *lim, float *efectivitatEnfnsats, float *efectivitatDisparos) {
+    int res,  midaVaixell;
+
+    res = B_dispara('a'+*x, 1+*y, partida->jugador1.tauler.barcos, &midaVaixell);
+    switch (res) {
+        case RES_ERROR: printf("Error, casella fora de rang\n"); break;
+        case RES_REPETIT: printf("Dispar repetit\n"); break;
+        case RES_AIGUA: partida->jugador1.tauler.disparos[*x][*y] = CASELLA_AIGUA; break;
+        case RES_TOCAT:
+            partida->jugador1.tauler.disparos[*x][*y] = CASELLA_VAIXELL;
+            *efectivitatDisparos += 4-res;
+            fill_water_diagonals(partida->jugador1.tauler.disparos, partida->jugador1.tauler.dim, *x, *y);
+            break;
+        case RES_ENFONSAT:
+            partida->jugador1.tauler.disparos[*x][*y] = CASELLA_VAIXELL;
+            *efectivitatEnfnsats += ((2 * (float)midaVaixell)-1)/(*efectivitatDisparos?*efectivitatDisparos:4-res);
+            *efectivitatDisparos = 0;
+            P_procesa_hundido(*x, *y, partida->jugador1.tauler.disparos, partida->jugador1.tauler.dim);
+            (*lim)--;
+            break;
+    }
+}
+
 void jugarPartida(partida_t *partida) {
         int x,y,res, lim = 10, counter = 0, midaVaixell;
         float efectivitatEnfnsats = 0, efectivitatDisparos = 0;
+        char f;
 
     if (partida->mode == MAQUINA) {
         while (lim != 0) {
             counter++;
             clear();
             P_decide_disparo(&x, &y, partida->jugador1.tauler.disparos, (int) partida->jugador1.tauler.dim);
-            res = B_dispara('a'+x, 1+y, partida->jugador1.tauler.barcos, &midaVaixell);
-            switch (res) {
-                case RES_ERROR: printf("Error, casella fora de rang\n"); break;
-                case RES_REPETIT: printf("Dispar repetit\n"); break;
-                case RES_AIGUA: partida->jugador1.tauler.disparos[x][y] = CASELLA_AIGUA; break;
-                case RES_TOCAT:
-                    partida->jugador1.tauler.disparos[x][y] = CASELLA_VAIXELL;
-                    efectivitatDisparos += 4-res;
-                    fill_water_diagonals(partida->jugador1.tauler.disparos, partida->jugador1.tauler.dim, x, y);
-                    break;
-                case RES_ENFONSAT:
-                    partida->jugador1.tauler.disparos[x][y] = CASELLA_VAIXELL;
-                    efectivitatEnfnsats += ((2 * (float)midaVaixell)-1)/(efectivitatDisparos?efectivitatDisparos:4-res);
-                    efectivitatDisparos = 0;
-                    P_procesa_hundido(x, y, partida->jugador1.tauler.disparos, partida->jugador1.tauler.dim);
-                    lim--;
-                    break;
-            }
-
+            procesaDisparo(partida, &x, &y, &lim, &efectivitatEnfnsats, &efectivitatDisparos);
             P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
             printf("\n");
 
             usleep(150000);
             //  P_pausa();
         }
+    } else if (partida->mode == JUGADOR) {
+        while (lim != 0) {
+            clear();
+            //P_muestra_una_matriz(partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int)partida->jugador1.tauler.dim);
+            P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
+            printf("\n");
+
+            if (!P_nova_jugada(&f, &y, partida->jugador2.tauler.dim)) break;
+
+            P_coordenadas(f, &y, &x);
+
+            counter++;
+            //P_decide_disparo(&x, &y, partida->jugador1.tauler.disparos, (int) partida->jugador1.tauler.dim);
+            procesaDisparo(partida, &x, &y, &lim, &efectivitatEnfnsats, &efectivitatDisparos);
+            printf("\n");
+        }
+    }
+
+    if (lim == 0) {
         partida->jugador1.record.punts = 100 * ((float)partida->jugador1.tauler.dim/(float)counter)*efectivitatEnfnsats;
         printf("Disparos: %i\n", counter);
         printf("Puntuacio: %i\n", partida->jugador1.record.punts);
 
         P_guarda_record(FITXER_RECORDS, partida->jugador1.record);
 
+        P_pausa();
     }
-    //P_muestra_dos_matrices (partida->tablero_barcos, partida->tablero_disparos, (int)partida->dim, (int) partida->dim);
-    P_pausa();
 
 }
 
@@ -154,7 +178,7 @@ void guardarPartida(partida_t *partida) {
     bool p_guardada;
 
     decompose_partida (*partida, &dimen, &m_joc, &torn, nom_jugadors);
-    p_guardada = P_guarda_partida("partida.txt", dimen, m_joc, torn, nom_jugadors);
+    p_guardada = P_guarda_partida(FITXER_JOC, dimen, m_joc, torn, nom_jugadors);
     if (p_guardada) {
         printf ("Partida guardada correctament.");
     } else {

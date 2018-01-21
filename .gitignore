@@ -2,6 +2,7 @@
 *.o
 game
 records.txt
+juego.dat
 obj/
 lib/
 include/

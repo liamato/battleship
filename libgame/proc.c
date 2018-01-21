@@ -106,6 +106,7 @@ extern void P_decide_disparo (int *f, int *c, char tablero_disparos[][COL_MAX], 
 extern void P_procesa_hundido (int f, int c, char tablero_disparos[][COL_MAX], unsigned int dim)
 {
     char pos = tablero_disparos[f][c];
+    fill_water(tablero_disparos, dim, f, c);
     find_first_position(tablero_disparos, dim, &f, &c);
 
     while (tablero_disparos[f][c] == pos) {
@@ -297,7 +298,7 @@ extern int P_recupera_records (char fitxer_record[], record_t records[], unsigne
 void P_muestra_records (record_t records[], int dim) {
     int i, j;
     i = 0;
-    printf("Data:\t\tNom:\t\tPunts:\n");
+    printf("Data:\t\tNom:\t\t\tPunts:\n");
     while (i<dim)
     {
         printf ("%i", records[i].data.dia) ;
@@ -312,7 +313,8 @@ void P_muestra_records (record_t records[], int dim) {
           printf ("%c", records[i].nom[j]) ;
           j = j + 1 ;
         }
-        if (j<4) printf("\t");
+        if (j<9) printf("\t");
+        if (j<17) printf("\t");
         printf ("\t") ;
         printf ("%i\n", records[i].punts) ;
         i = i + 1 ;
@@ -331,13 +333,64 @@ void sort_records(record_t *records, unsigned int dim) {
  PROCEDIMENTS ADDICIONALS A DESENVOLUPAR
  ------------------------------------------------------- */
 
+ bool coor_correctes (char fila, int col, int dim)
+ {
+     bool crrecte;
+     int fila_ent;
+
+     P_coordenadas(fila, &col, &fila_ent);
+
+     if (fila_ent < 0 || fila_ent > dim-1 || col < 0 || col > dim-1) {
+         crrecte = false;
+     } else {
+         crrecte = true;
+     }
+
+     return crrecte;
+ }
+
 /*
 funcio P_nuevo_disparo (var f:caracter, var c:enter, dim:enter) retorna boolea;
  */
 bool P_nova_jugada (char *f, int *c, unsigned int dim)
 {
-    printf("Procediment P_nova_jugada\n");
-    return true;
+    bool correctes, seguir;
+    int num;
+
+    printf ("Vols fer una pausa?\n");
+    printf (" 0- Pausa\n 1- Continuar jugant\n");
+    scanf ("%i", &num);
+    P_netejar_stdio();
+
+    while (num != 0 && num != 1) {
+        printf ("\nOpcio incorrecta, torna a triar: ");
+        scanf ("%i", &num);
+        P_netejar_stdio();
+    }
+
+    if (num == 0) {
+        seguir = false;
+    }
+
+    if (num == 1) {
+        seguir = true;
+        printf("Insereix coordenades pel seguent tret: ");
+        scanf("%c", f);
+        scanf("%i", c);
+
+        P_netejar_stdio();
+
+        correctes = coor_correctes(*f,*c, dim);
+        while (!correctes) {
+            printf("Coordenades fora del taulell, insereix noves coordenades pel tret (fila columna): ");
+            scanf("%c", f);
+            scanf("%i", c);
+            P_netejar_stdio();
+            correctes = coor_correctes(*f, *c, dim);
+        }
+    }
+
+    return seguir;
 }
 
 /*

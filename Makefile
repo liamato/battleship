@@ -78,6 +78,4 @@ clean:
 	rm -rf $(OBJ_DIR)
 	rm -rf $(LIB_DIR)
 	rm -rf $(HEADER_DIR)
-	rm -f game
-	rm -f records.txt
-	rm -f P2.zip
+	rm -f game records.txt juego.dat P2.zip
