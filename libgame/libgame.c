@@ -78,7 +78,19 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
 }
 
 void carregarPartida(partida_t *partida) {
+    int unsigned dimen;
+    int m_joc, torn;
+    jugador_t nom_jugadors[2];
+    bool partidaCarregada;
 
+    partidaCarregada = P_recupera_partida("partida.txt", &dimen, &m_joc, &torn, nom_jugadors);
+
+    if (partidaCarregada) {
+        compose_partida(partida, dimen, m_joc, torn, nom_jugadors);
+        printf ("La partida s'ha carregat correctament.");
+    } else {
+        printf ("No s'ha pogut carregar cap partida, no existeix cap partida guardada.");
+    }
 }
 
 void mostrarPodium() {
@@ -136,7 +148,18 @@ void jugarPartida(partida_t *partida) {
 }
 
 void guardarPartida(partida_t *partida) {
+    unsigned int dimen;
+    int  m_joc, torn;
+    jugador_t nom_jugadors[2];
+    bool p_guardada;
 
+    decompose_partida (*partida, &dimen, &m_joc, &torn, nom_jugadors);
+    p_guardada = P_guarda_partida("partida.txt", dimen, m_joc, torn, nom_jugadors);
+    if (p_guardada) {
+        printf ("Partida guardada correctament.");
+    } else {
+        printf ("La partida no s'ha pogut guardar correctament.");
+    }
 }
 
 void sortir(bool *s) {

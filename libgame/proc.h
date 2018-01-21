@@ -129,5 +129,7 @@ extern bool es_vertical(char taula[][DIM_MAX], unsigned int dim, int x, int y);
 extern void find_first_position(char taula[][DIM_MAX], unsigned int dim, int *x, int *y);
 extern void fill_water_diagonals(char taula[][DIM_MAX], unsigned int dim, int x, int y);
 extern void fill_water(char taula[][DIM_MAX], unsigned int dim, int x, int y);
+extern void decompose_partida(partida_t partida, unsigned int *dim, int *modo_juego, int *turno, jugador_t *jugadores);
+extern void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int turno, jugador_t *jugadores);
 
 #endif /* FUNCIONS_H_INCLUDED */

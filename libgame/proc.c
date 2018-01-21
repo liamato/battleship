@@ -344,21 +344,49 @@ bool P_nova_jugada (char *f, int *c, unsigned int dim)
 /*
  funcio P_guarda_partida (nom_fitxer:taula de caracters, dim:enter, modo_juego:enter, turno:enter, jugadores:taula de jugador_t) retorna boolea;
  */
-bool P_guarda_partida (char fitxer_record[], unsigned int dim, int modo_juego, int turno, jugador_t jugadores[])
-{
-    printf("Procediment P_guardar_partida\n");
-    return true;
+bool P_guarda_partida (char fitxer_record[], unsigned int dim, int modo_juego, int turno, jugador_t jugadores[]) {
+    partida_t partida;
+    FILE *partidaGuardada;
+    bool correctament;
+
+    correctament = true ;
+    partidaGuardada = fopen(fitxer_record, "wb") ;
+
+    if (partidaGuardada != NULL) {
+        printf ("S'esta guardant la partida...") ;
+        compose_partida(&partida, dim, modo_juego, turno, jugadores);
+
+        fwrite(&partida, sizeof(partida_t), 1, partidaGuardada);
+
+        fclose(partidaGuardada);
+    } else {
+        correctament = false ;
+    }
+
+    return correctament;
 }
 
 /*
  funcio P_recupera_partida (nom_fitxer:taula de caracters, var dim:enter, var modo_juego: enter,
  var turno:enter, var jugadores:taula de jugador_t) retorna boolea;
  */
-bool P_recupera_partida (char fitxer_record[], unsigned int *dim, int *modo_juego, int *turno, jugador_t jugadores[])
+bool P_recupera_partida (char fitxer_record[], unsigned int *dim, int *modo_juego, int *turno, jugador_t jugadores[]) {
+    FILE *f_pguardada;
+    partida_t partida;
+    bool correcte;
 
-{
-    printf("Procediment P_recupera_partida\n");
-    return true;
+    f_pguardada = fopen(fitxer_record, "rb");
+    correcte = true;
+    if (f_pguardada!=NULL) {
+        fread(&partida, sizeof(partida_t), 1, f_pguardada);
+
+        decompose_partida (partida, dim, modo_juego, turno, jugadores);
+        fclose(f_pguardada);
+    } else {
+        correcte = false;
+    }
+
+    return correcte;
 }
 
 /*
@@ -409,4 +437,27 @@ void fill_water(char taula[][DIM_MAX], unsigned int dim, int x, int y) {
     if (y != 0 && taula[x][y-1] != CASELLA_VAIXELL) {taula[x][y-1] = CASELLA_AIGUA;}
     if (x < (int)dim-1 && taula[x+1][y] != CASELLA_VAIXELL) {taula[x+1][y] = CASELLA_AIGUA;}
     if (y < (int)dim-1 && taula[x][y+1] != CASELLA_VAIXELL) {taula[x][y+1] = CASELLA_AIGUA;}
+}
+
+/**
+ * desmonta un partida_t en els seus components
+ */
+void decompose_partida(partida_t partida, unsigned int *dim, int *modo_juego, int *turno, jugador_t *jugadores) {
+    *dim = partida.jugador1.tauler.dim;
+    *modo_juego = (int)partida.mode;
+    *turno = partida.turno;
+    jugadores[0] = partida.jugador1;
+    jugadores[1] = partida.jugador2;
+}
+
+/**
+ * remonta un partida_t a partir dels seus components
+ */
+void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int turno, jugador_t *jugadores) {
+    partida->turno = turno;
+    partida->mode = (gamemode_t)modo_juego;
+    partida->jugador1 = jugadores[0];
+    partida->jugador2 = jugadores[0];
+    partida->jugador1.tauler.dim = dim;
+    partida->jugador2.tauler.dim = dim;
 }
