@@ -95,9 +95,9 @@ void carregarPartida(bool *menu_extens, partida_t *partida) {
     if (partidaCarregada) {
         compose_partida(partida, dimen, m_joc, torn, nom_jugadors);
         *menu_extens = true;
-        printf ("La partida s'ha carregat correctament.");
+        printf ("La partida s'ha carregat correctament.\n");
     } else {
-        printf ("No s'ha pogut carregar cap partida, no existeix cap partida guardada.");
+        printf ("No s'ha pogut carregar cap partida, no existeix cap partida guardada.\n");
     }
 }
 
@@ -215,9 +215,9 @@ void guardarPartida(partida_t *partida) {
     decompose_partida (*partida, &dimen, &m_joc, &torn, nom_jugadors);
     p_guardada = P_guarda_partida(FITXER_JOC, dimen, m_joc, torn, nom_jugadors);
     if (p_guardada) {
-        printf ("Partida guardada correctament.");
+        printf ("Partida guardada correctament.\n");
     } else {
-        printf ("La partida no s'ha pogut guardar correctament.");
+        printf ("La partida no s'ha pogut guardar correctament.\n");
     }
 }
 

@@ -405,7 +405,7 @@ bool P_guarda_partida (char fitxer_record[], unsigned int dim, int modo_juego, i
     partidaGuardada = fopen(fitxer_record, "wb") ;
 
     if (partidaGuardada != NULL) {
-        printf ("S'esta guardant la partida...") ;
+        printf ("S'esta guardant la partida...\n") ;
         compose_partida(&partida, dim, modo_juego, turno, jugadores);
 
         fwrite(&partida, sizeof(partida_t), 1, partidaGuardada);
