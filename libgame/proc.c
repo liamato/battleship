@@ -509,7 +509,7 @@ void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int 
     partida->turno = turno;
     partida->mode = (gamemode_t)modo_juego;
     partida->jugador1 = jugadores[0];
-    partida->jugador2 = jugadores[0];
+    partida->jugador2 = jugadores[1];
     partida->jugador1.tauler.dim = dim;
     partida->jugador2.tauler.dim = dim;
 }
