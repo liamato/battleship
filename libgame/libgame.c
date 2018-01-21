@@ -24,8 +24,8 @@ void initTauler(tauler_t * tauler) {
     P_inicializa_matriz(tauler->barcos, DIM_MAX, DIM_MAX, CASELLA_AIGUA);
 
     P_inicializa_matriz(tauler->disparos, DIM_MAX, DIM_MAX, CASELLA_BUIDA);
-    B_inicializa_barcos_fijo(tauler->barcos, tauler->dim);
-    //B_inicializa_barcos(tauler->barcos, tauler->dim);
+    //B_inicializa_barcos_fijo(tauler->barcos, tauler->dim);
+    B_inicializa_barcos(tauler->barcos, tauler->dim);
 }
 
 void novaPartida(bool *menu_extens, partida_t *partida) {

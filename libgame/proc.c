@@ -118,9 +118,8 @@ extern void P_procesa_hundido (int f, int c, char tablero_disparos[][COL_MAX], u
 /*
 funcio P_aleatorio ( min: enter, max: enter) retorna enter;
  */
-int P_aleatorio (int min, int max)
-{
-    return min + rand() % (max - min);
+int P_aleatorio (int min, int max) {
+        return min + rand() % (max - min + 1);
 }
 
 /*
