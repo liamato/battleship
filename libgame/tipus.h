@@ -63,12 +63,15 @@ typedef struct
  typedef struct {
      char barcos[DIM_MAX][DIM_MAX];
      char disparos[DIM_MAX][DIM_MAX];
-     unsigned short dim;
+     int noEnfonsats;
+     unsigned int dim;
  } tauler_t;
 
 typedef struct {
     tauler_t tauler;
     record_t record;
+    float efectivitatEnfonsats;
+    float efectivitatDisparos;
 } jugador_t;
 
 typedef enum {

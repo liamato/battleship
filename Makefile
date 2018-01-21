@@ -26,7 +26,7 @@ endif
 
 .PHONY: all
 all: objdir joc barcos
-	$(CMP) $(OBJ_DIR)/*.o -L $(LIB_DIR) -lgame -lBarcos2017 -o game
+	$(CMP) $(OBJ_DIR)/juego.o -L $(LIB_DIR) -lgame -lBarcos2017 -lcolors -o game
 
 joc: juego.c game
 	$(COMPILE) juego.c -o $(OBJ_DIR)/juego.o
@@ -39,7 +39,7 @@ barcos: headerdir libdir $(LB_DIR)/libBarcos2017.h $(LB_OS_DIR)/libBarcos2017.a
 game: proc tipus libdir $(LG_DIR)/libgame.c $(LG_DIR)/libgame.h
 	$(COMPILE) $(LG_DIR)/libgame.c -o $(OBJ_DIR)/libgame.o
 	@\cp -rf $(LG_DIR)/libgame.h $(HEADER_DIR)/
-	@ar crD $(LIB_DIR)/libgame.a $(OBJ_DIR)/libgame.o
+	@ar crD $(LIB_DIR)/libgame.a $(OBJ_DIR)/libgame.o $(OBJ_DIR)/proc.o
 
 proc: objdir headerdir barcos colors $(LG_DIR)/proc.c $(LG_DIR)/proc.h
 	@\cp -rf $(LG_DIR)/proc.h $(HEADER_DIR)/
