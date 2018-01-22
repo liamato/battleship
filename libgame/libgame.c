@@ -20,18 +20,22 @@ void menu (bool complet) {
     printf ("f. Sortir del joc\n") ;
 }
 
-void initTauler(tauler_t * tauler) {
+void initTauler(tauler_t * tauler, bool aleatori) {
     P_inicializa_matriz(tauler->barcos, DIM_MAX, DIM_MAX, CASELLA_AIGUA);
 
     P_inicializa_matriz(tauler->disparos, DIM_MAX, DIM_MAX, CASELLA_BUIDA);
     //B_inicializa_barcos_fijo(tauler->barcos, tauler->dim);
-    B_inicializa_barcos(tauler->barcos, tauler->dim);
+    if (aleatori) {
+        B_inicializa_barcos(tauler->barcos, tauler->dim);
+    } else {
+        P_coloca_barcos(tauler->barcos, tauler->dim);
+    }
 }
 
-void initJugador(jugador_t *jugador, nom_t name, unsigned int dim) {
+void initJugador(jugador_t *jugador, nom_t name, unsigned int dim, bool aleatori) {
     jugador->tauler.dim = dim;
     jugador->tauler.noEnfonsats = 10;
-    initTauler(&jugador->tauler);
+    initTauler(&jugador->tauler, aleatori);
     strcpy(jugador->record.nom, name);
     jugador->record.data = P_data_avui();
     jugador->record.punts = 0;
@@ -39,9 +43,9 @@ void initJugador(jugador_t *jugador, nom_t name, unsigned int dim) {
     jugador->efectivitatDisparos = 0;
 }
 
-void initPartida(partida_t *partida, gamemode_t gamemode, nom_t name, unsigned int dim) {
-    initJugador(&partida->jugador1, name, dim);
-    initJugador(&partida->jugador2, "CPU", dim);
+void initPartida(partida_t *partida, gamemode_t gamemode, nom_t name, unsigned int dim, bool aleatori) {
+    initJugador(&partida->jugador1, name, dim, aleatori);
+    initJugador(&partida->jugador2, "CPU", dim, true);
 
     partida->mode = gamemode;
     partida->turno = 0;
@@ -51,6 +55,7 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
     unsigned int dim;
     int mode;
     nom_t nom = "CPU";
+    char generacioBarcos;
 
     *menu_extens = true;
     clear();
@@ -81,7 +86,17 @@ void novaPartida(bool *menu_extens, partida_t *partida) {
     clear();
     flush_stdin();
 
-    initPartida(partida, (gamemode_t)mode, nom, dim);
+    printf("Vols posar els vaixells manualment o automaticament (m/a): ");
+    scanf("%c", &generacioBarcos);
+    flush_stdin();
+    while (generacioBarcos != 'm' && generacioBarcos != 'a') {
+        printf("Resposta incorrecte\n");
+        printf("Vols posar els vaixells manualment o automaticament (m/a): ");
+        scanf("%c", &generacioBarcos);
+        flush_stdin();
+    }
+
+    initPartida(partida, (gamemode_t)mode, nom, dim, generacioBarcos == 'a');
 }
 
 void carregarPartida(bool *menu_extens, partida_t *partida) {

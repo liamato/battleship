@@ -441,13 +441,83 @@ bool P_recupera_partida (char fitxer_record[], unsigned int *dim, int *modo_jueg
     return correcte;
 }
 
+void askShip(int size, char board[][DIM_MAX], int dim) {
+    char xc, pos;
+    int x,y;
+    bool vertical = true;
+
+    system(NETEJA_PANTALLA);
+
+    P_muestra_una_matriz(board, dim, dim);
+
+    printf("Barco de %i espais:\n", size);
+
+    if (size != 1) {
+        printf("En vertical o horitzontal (v/h): ");
+        scanf("%c", &pos);
+        P_netejar_stdio();
+        while (pos != 'v' && pos != 'h') {
+            printf("Opcio incorrecte, torna a escriureu\n");
+            printf("En vertical o horitzontal (v/h): ");
+            scanf("%c", &pos);
+            P_netejar_stdio();
+        }
+
+        vertical = (pos == 'v');
+    }
+
+    printf("Cordenades (fila columna): ");
+    scanf("%c", &xc);
+    scanf("%i", &y);
+    P_netejar_stdio();
+
+    P_coordenadas(xc, &y, &x);
+    while (!checkSpace(x, y, size, vertical, CASELLA_AIGUA, board, dim)) {
+        printf("Cordenades ocupades, incorrectes o masa aprop de altrs baixells, torna a escriureu\n");
+        printf("Cordenades (fila columna): ");
+        scanf("%c", &xc);
+        scanf("%i", &y);
+        P_netejar_stdio();
+
+        P_coordenadas(xc, &y, &x);
+    }
+    fillSpace(x, y, size, vertical, board, CASELLA_VAIXELL);
+}
+
 /*
- funcio P_coloca_barcos (var tablero_barcos:taula de caracters, dim: enter) retorna boolea;
+ accio P_coloca_barcos (var tablero_barcos:taula de caracters, dim: enter) es;
  */
-bool P_coloca_barcos (char tablero_barcos[][DIM_MAX], unsigned int dim)
-{
-    printf("Procediment P_coloca_barcos\n");
-    return  true;
+void P_coloca_barcos (char tablero_barcos[][DIM_MAX], unsigned int dim) {
+    int count4 = 1,
+        count3 = 2,
+        count2 = 3,
+        count1 = 4;
+
+    P_inicializa_matriz(tablero_barcos, DIM_MAX, DIM_MAX, CASELLA_AIGUA);
+
+    // barco de 4 x1
+    while (count4 > 0) {
+        askShip(4, tablero_barcos, (int)dim);
+        count4--;
+    }
+
+    // barco de 3 x2
+    while (count3 > 0) {
+        askShip(3, tablero_barcos, (int)dim);
+        count3--;
+    }
+
+    // barco de 2 x3
+    while (count2 > 0) {
+        askShip(2, tablero_barcos, (int)dim);
+        count2--;
+    }
+
+    // barco de 1 x4
+    while (count1 > 0) {
+        askShip(1, tablero_barcos, (int)dim);
+        count1--;
+    }
 }
 
 bool es_vertical(char taula[][DIM_MAX], unsigned int dim, int x, int y) {
@@ -512,4 +582,63 @@ void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int 
     partida->jugador2 = jugadores[1];
     partida->jugador1.tauler.dim = dim;
     partida->jugador2.tauler.dim = dim;
+}
+
+bool checkCross(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
+    if (tauler[x][y] != value) return false;
+    if (x>0 && y>0 && tauler[x-1][y-1] != value) return false;
+    if (x<dim-1 && y>0 && tauler[x+1][y-1] != value) return false;
+    if (x>0 && y<dim-1 && tauler[x-1][y+1] != value) return false;
+    if (x<dim-1 && y<dim-1 && tauler[x+1][y+1] != value) return false;
+
+    return true;
+}
+
+bool checkVertical(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
+    if (tauler[x][y] != value) return false;
+    if (x>0 && tauler[x-1][y] != value) return false;
+    if (x<dim-1 && tauler[x+1][y] != value) return false;
+
+    return true;
+}
+
+bool checkHorizontal(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
+    if (tauler[x][y] != value) return false;
+    if (y>0 && tauler[x][y-1] != value) return false;
+    if (y<dim-1 && tauler[x][y+1] != value) return false;
+
+    return true;
+}
+
+
+bool checkSpace(int x, int y, int size, bool vertical, char value, char tauler[][DIM_MAX], int dim) {
+    int toX =  (vertical ? x+size-1 : x),
+        toY = (!vertical ? y+size-1 : y);
+
+    if (!coor_correctes(x+'a',y+1, dim)) return false;
+    if (!coor_correctes(toX+'a', toY+1, dim)) return false;
+
+    if ((vertical || size == 1) && x>0 && tauler[x-1][y] != value) return false;
+    if ((!vertical || size == 1) && y>0 && tauler[x][y-1] != value) return false;
+    if (!checkCross(x, y, value, tauler, dim)) return false;
+
+    while (x != toX || y != toY) {
+        if ( vertical && !checkVertical(x++, y, value, tauler, dim)) return false;
+        if (!vertical && !checkHorizontal(x, y++, value, tauler, dim)) return false;
+    }
+
+    if (!checkCross(x, y, value, tauler, dim)) return false;
+
+    return true;
+}
+
+void fillSpace(int x, int y, int size, bool vertical, char tauler[][DIM_MAX], char value) {
+    int toX =  (vertical ? x+size : x),
+        toY = (!vertical ? y+size : y);
+
+    while (x != toX || y != toY) {
+        tauler[x][y] = value;
+        if (vertical) x++;
+        else y++;
+    }
 }

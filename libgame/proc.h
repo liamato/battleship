@@ -120,9 +120,9 @@ bool P_guarda_partida (char fitxer_record[], unsigned int dim, int modo_juego, i
 bool P_recupera_partida (char fitxer_record[], unsigned int *dim, int *modo_juego, int *turno, jugador_t jugadores[]);
 
 /*
- funcio P_coloca_barcos (var tablero_barcos:taula de caracters, dim: enter) retorna boolea;
+ accio P_coloca_barcos (var tablero_barcos:taula de caracters, dim: enter) es;
  */
-bool P_coloca_barcos (char tablero_barcos[][DIM_MAX], unsigned int dim);
+void P_coloca_barcos (char tablero_barcos[][DIM_MAX], unsigned int dim);
 
 extern void P_muestra_records (record_t records[], int dim);
 extern bool es_vertical(char taula[][DIM_MAX], unsigned int dim, int x, int y);
@@ -131,5 +131,7 @@ extern void fill_water_diagonals(char taula[][DIM_MAX], unsigned int dim, int x,
 extern void fill_water(char taula[][DIM_MAX], unsigned int dim, int x, int y);
 extern void decompose_partida(partida_t partida, unsigned int *dim, int *modo_juego, int *turno, jugador_t *jugadores);
 extern void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int turno, jugador_t *jugadores);
+extern bool checkSpace(int x, int y, int size, bool vertical, char value, char tauler[][DIM_MAX], int dim);
+extern void fillSpace(int x, int y, int size, bool vertical, char tauler[][DIM_MAX], char value);
 
 #endif /* FUNCIONS_H_INCLUDED */
