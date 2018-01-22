@@ -163,20 +163,20 @@ void P_inicializa_matriz (char matriz[][COL_MAX], int nfilas, int ncols, char ca
 }
 
 void colorPrint(char c) {
-    if (c == '?') {
+    if (c == CASELLA_BUIDA) {
         printcf(MAGENTA, " %c", c);
     }
-    if (c == '.') {
+    if (c == CASELLA_AIGUA) {
         printcf(BLUE, " %c", c);
     }
-    if (c == '@') {
+    if (c == CASELLA_VAIXELL) {
         printcf(GREEN, " %c", c);
     }
-    if (c == 'X') {
+    if (c == CASELLA_VAIXELL_TOCAT) {
         printcf(RED, " %c", c);
     }
-    if (c == '-') {
-        printcf(CYAN, " %c", c);
+    if (c == CASELLA_AIGUA_TOCADA) {
+        printcf(YELLOW, " %c", c);
     }
 }
 
