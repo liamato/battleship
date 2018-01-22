@@ -71,7 +71,7 @@ headerdir:
 
 .PHONY: dist
 dist: all clean
-	zip -j P2.zip juego.c $(LG_DIR)/libgame.c $(LG_DIR)/libgame.h $(LG_DIR)/proc.c $(LG_DIR)/proc.h $(LG_DIR)/tipus.h
+	zip -r P2.zip . -x .editorconfig  -x .git\*
 
 .PHONY: clean
 clean:
