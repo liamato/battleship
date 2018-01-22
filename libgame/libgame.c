@@ -153,8 +153,8 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
     } else if (partida->mode == JUGADOR) {
         while (partida->jugador1.tauler.noEnfonsats != 0) {
             clear();
-            //P_muestra_una_matriz(partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int)partida->jugador1.tauler.dim);
-            P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
+            P_muestra_una_matriz(partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int)partida->jugador1.tauler.dim);
+            //P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
             printf("\n");
 
             if (!P_nova_jugada(&f, &y, partida->jugador1.tauler.dim)) break;
@@ -170,9 +170,8 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
         while (partida->jugador1.tauler.noEnfonsats != 0 && partida->jugador2.tauler.noEnfonsats != 0) {
             clear();
 
-            //P_muestra_una_matriz(partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int)partida->jugador1.tauler.dim);
-            P_muestra_dos_matrices (partida->jugador2.tauler.barcos, partida->jugador2.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
-            P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
+            //P_muestra_dos_matrices (partida->jugador2.tauler.barcos, partida->jugador2.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
+            P_muestra_dos_matrices(partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
             printf("\n");
 
             if (!P_nova_jugada(&f, &y, partida->jugador1.tauler.dim)) break;
