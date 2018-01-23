@@ -131,9 +131,18 @@ void procesaDisparo(jugador_t *jugador, tauler_t *tauler, int *x, int *y) {
 
     res = B_dispara('a'+*x, 1+*y, tauler->barcos, &midaVaixell);
     switch (res) {
-        case RES_ERROR: printf("Error, casella fora de rang\n"); break;
-        case RES_REPETIT: printf("Dispar repetit\n"); break;
-        case RES_AIGUA: jugador->tauler.disparos[*x][*y] = CASELLA_AIGUA; break;
+        case RES_ERROR:
+            printf("Error, casella fora de rang\n");
+            jugador->efectivitatDisparos += 4-res;
+            break;
+        case RES_REPETIT:
+            printf("Dispar repetit\n");
+            jugador->efectivitatDisparos += 4-res;
+            break;
+        case RES_AIGUA:
+            jugador->tauler.disparos[*x][*y] = CASELLA_AIGUA;
+            jugador->efectivitatDisparos += 4-res;
+            break;
         case RES_TOCAT:
             jugador->tauler.disparos[*x][*y] = CASELLA_VAIXELL;
             jugador->efectivitatDisparos += 4-res;
