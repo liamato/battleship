@@ -152,6 +152,8 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
     char f;
     jugador_t *j = NULL;
 
+    clear();
+
     if (partida->mode == MAQUINA) {
         while (partida->jugador1.tauler.noEnfonsats != 0) {
             partida->turno++;
@@ -167,7 +169,6 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
         }
     } else if (partida->mode == JUGADOR) {
         while (partida->jugador1.tauler.noEnfonsats != 0) {
-            clear();
             P_muestra_una_matriz(partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int)partida->jugador1.tauler.dim);
             //P_muestra_dos_matrices (partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
             printf("\n");
@@ -178,12 +179,12 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
 
             partida->turno++;
             //P_decide_disparo(&x, &y, partida->jugador1.tauler.disparos, (int) partida->jugador1.tauler.dim);
+            clear();
             procesaDisparo(&partida->jugador1, &partida->jugador1.tauler, &x, &y);
             printf("\n");
         }
     } else if (partida->mode == JUGADOR_MAQUINA) {
         while (partida->jugador1.tauler.noEnfonsats != 0 && partida->jugador2.tauler.noEnfonsats != 0) {
-            clear();
 
             //P_muestra_dos_matrices (partida->jugador2.tauler.barcos, partida->jugador2.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
             P_muestra_dos_matrices(partida->jugador1.tauler.barcos, partida->jugador1.tauler.disparos, (int)partida->jugador1.tauler.dim, (int) partida->jugador1.tauler.dim);
@@ -194,6 +195,8 @@ void jugarPartida(bool *menu_extens, partida_t *partida) {
             P_coordenadas(f, &y, &x);
 
             partida->turno++;
+            clear();
+
             //P_decide_disparo(&x, &y, partida->jugador1.tauler.disparos, (int) partida->jugador1.tauler.dim);
             procesaDisparo(&partida->jugador1, &partida->jugador2.tauler, &x, &y);
             printf("\n");
