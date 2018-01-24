@@ -91,8 +91,8 @@ extern void P_decide_disparo (int *f, int *c, char tablero_disparos[][COL_MAX], 
     }
 
     while (*f == -1 && *c == -1) {
-        x = P_aleatorio(0, (int)dim);
-        y = P_aleatorio(0, (int)dim);
+        x = P_aleatorio(0, (int)dim-1);
+        y = P_aleatorio(0, (int)dim-1);
         if (tablero_disparos[x][y] == CASELLA_BUIDA) {
             *f = x;
             *c = y;
