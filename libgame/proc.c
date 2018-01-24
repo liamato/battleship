@@ -236,30 +236,33 @@ void P_muestra_dos_matrices (char matriz1[][COL_MAX], char matriz2[][COL_MAX], i
  */
 extern bool P_guarda_record (char fitxer_record[], record_t record) {
     FILE *file ;
-    record_t records[RECORDS_TOP_COUNT+1];
-    int count = 0,x=0;
+    record_t records[RECORDS_TOP_COUNT];
+    int count = 0,x=0,total = 0;
+    bool ret = true, posat = false;
 
     count = P_recupera_records(fitxer_record, records, RECORDS_TOP_COUNT);
-
-    records[count++] = record;
-
-    sort_records(records, count);
 
     file = fopen (fitxer_record,"w");
 
     if (file == NULL) {
         printf ("No existeix el fitxer\n") ;
-        return false;
+        ret = false;
+    } else {
+        while (x < (count < RECORDS_TOP_COUNT ? count : RECORDS_TOP_COUNT) && total < RECORDS_TOP_COUNT) {
+            if (!posat && record.punts > records[x].punts) {
+                fprintf(file, RECORD_FORMAT, record.data.dia, record.data.mes, record.data.any, record.nom, record.punts);
+                posat = true;
+                total++;
+            }
+            fprintf(file, RECORD_FORMAT, records[x].data.dia, records[x].data.mes, records[x].data.any, records[x].nom, records[x].punts);
+            x++;
+            total++;
+        }
+
+        fclose(file);
     }
 
-    while (x < (count < RECORDS_TOP_COUNT ? count : RECORDS_TOP_COUNT)) {
-        fprintf(file, RECORD_FORMAT, records[x].data.dia, records[x].data.mes, records[x].data.any, records[x].nom, records[x].punts);
-        x++;
-    }
-
-    fclose(file);
-
-    return true;
+    return ret;
 }
 
 /*
@@ -272,25 +275,23 @@ extern int P_recupera_records (char fitxer_record[], record_t records[], unsigne
 
     file = fopen(fitxer_record, "r");
 
-    if (file == NULL) {
-        return 0;
-    }
+    if (file != NULL) {
+        while (!feof(file) && x < (int)dim) {
+            fscanf(file, "%d-%d-%d\t", &records[x].data.dia, &records[x].data.mes, &records[x].data.any);
 
-    while (!feof(file) && x < (int)dim) {
-        fscanf(file, "%d-%d-%d\t", &records[x].data.dia, &records[x].data.mes, &records[x].data.any);
+            c = 0;
+            fscanf(file, "%c", &records[x].nom[c]);
+            while (records[x].nom[c] != '\t' && x < NOM_MAX) {
+                fscanf(file, "%c", &records[x].nom[++c]);
+            }
+            records[x].nom[c] = 0;
 
-        c = 0;
-        fscanf(file, "%c", &records[x].nom[c]);
-        while (records[x].nom[c] != '\t' && x < NOM_MAX) {
-            fscanf(file, "%c", &records[x].nom[++c]);
+            fscanf(file, "%d\n", &records[x].punts);
+            x++;
         }
-        records[x].nom[c] = 0;
 
-        fscanf(file, "%d\n", &records[x].punts);
-        x++;
+        fclose(file);
     }
-
-    fclose(file);
 
     return x;
 }
@@ -321,13 +322,6 @@ void P_muestra_records (record_t records[], int dim) {
     }
 }
 
-int compare_record(const void *record1, const void *record2) {
-    return (((record_t *)record1)->punts > ((record_t *)record2)->punts) ? -1 : (((record_t *)record1)->punts < ((record_t *)record2)->punts);
-}
-
-void sort_records(record_t *records, unsigned int dim) {
-    qsort(records, dim, sizeof(record_t), &compare_record);
-}
 
 /** -------------------------------------------------------
  PROCEDIMENTS ADDICIONALS A DESENVOLUPAR
@@ -526,13 +520,14 @@ bool es_vertical(char taula[][DIM_MAX], unsigned int dim, int x, int y) {
 
 void find_first_position(char taula[][DIM_MAX], unsigned int dim, int *x, int *y) {
     char c = taula[*x][*y];
-    while (c == taula[*x][*y]) {
+    bool end = false;
+    while (c == taula[*x][*y] && !end) {
         if (es_vertical(taula, dim, *x, *y)){
             if (*x != 0){(*x)--;}
-            else {break;}
+            else {end = true;}
         } else {
             if (*y != 0){(*y)--;}
-            else {break;}
+            else {end = true;}
         }
     }
 }
@@ -585,51 +580,55 @@ void compose_partida(partida_t * partida, unsigned int dim, int modo_juego, int 
 }
 
 bool checkCross(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
-    if (tauler[x][y] != value) return false;
-    if (x>0 && y>0 && tauler[x-1][y-1] != value) return false;
-    if (x<dim-1 && y>0 && tauler[x+1][y-1] != value) return false;
-    if (x>0 && y<dim-1 && tauler[x-1][y+1] != value) return false;
-    if (x<dim-1 && y<dim-1 && tauler[x+1][y+1] != value) return false;
+    bool ret = true;
+    if (tauler[x][y] != value) ret = false;
+    if (x>0 && y>0 && tauler[x-1][y-1] != value) ret = false;
+    if (x<dim-1 && y>0 && tauler[x+1][y-1] != value) ret = false;
+    if (x>0 && y<dim-1 && tauler[x-1][y+1] != value) ret = false;
+    if (x<dim-1 && y<dim-1 && tauler[x+1][y+1] != value) ret = false;
 
-    return true;
+    return ret;
 }
 
 bool checkVertical(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
-    if (tauler[x][y] != value) return false;
-    if (x>0 && tauler[x-1][y] != value) return false;
-    if (x<dim-1 && tauler[x+1][y] != value) return false;
+    bool ret = true;
+    if (tauler[x][y] != value) ret = false;
+    if (x>0 && tauler[x-1][y] != value) ret = false;
+    if (x<dim-1 && tauler[x+1][y] != value) ret = false;
 
-    return true;
+    return ret;
 }
 
 bool checkHorizontal(int x, int y, char value, char tauler[][DIM_MAX], int dim) {
-    if (tauler[x][y] != value) return false;
-    if (y>0 && tauler[x][y-1] != value) return false;
-    if (y<dim-1 && tauler[x][y+1] != value) return false;
+    bool ret = true;
+    if (tauler[x][y] != value) ret = false;
+    if (y>0 && tauler[x][y-1] != value) ret = false;
+    if (y<dim-1 && tauler[x][y+1] != value) ret = false;
 
-    return true;
+    return ret;
 }
 
 
 bool checkSpace(int x, int y, int size, bool vertical, char value, char tauler[][DIM_MAX], int dim) {
     int toX =  (vertical ? x+size-1 : x),
         toY = (!vertical ? y+size-1 : y);
+    bool ret = true;
 
-    if (!coor_correctes(x+'a',y+1, dim)) return false;
-    if (!coor_correctes(toX+'a', toY+1, dim)) return false;
+    if (!coor_correctes(x+'a',y+1, dim)) ret = false;
+    if (!coor_correctes(toX+'a', toY+1, dim)) ret = false;
 
-    if ((vertical || size == 1) && x>0 && tauler[x-1][y] != value) return false;
-    if ((!vertical || size == 1) && y>0 && tauler[x][y-1] != value) return false;
-    if (!checkCross(x, y, value, tauler, dim)) return false;
+    if ((vertical || size == 1) && x>0 && tauler[x-1][y] != value) ret = false;
+    if ((!vertical || size == 1) && y>0 && tauler[x][y-1] != value) ret = false;
+    if (!checkCross(x, y, value, tauler, dim)) ret = false;
 
     while (x != toX || y != toY) {
-        if ( vertical && !checkVertical(x++, y, value, tauler, dim)) return false;
-        if (!vertical && !checkHorizontal(x, y++, value, tauler, dim)) return false;
+        if ( vertical && !checkVertical(x++, y, value, tauler, dim)) ret = false;
+        if (!vertical && !checkHorizontal(x, y++, value, tauler, dim)) ret = false;
     }
 
-    if (!checkCross(x, y, value, tauler, dim)) return false;
+    if (!checkCross(x, y, value, tauler, dim)) ret = false;
 
-    return true;
+    return ret;
 }
 
 void fillSpace(int x, int y, int size, bool vertical, char tauler[][DIM_MAX], char value) {
